@@ -2,37 +2,15 @@
 
 ## What I built
 
-**Orchard Match**, a tile-matching game in the shape of 羊了个羊 (Sheep a
-Sheep): tap a visible tile into a shared tray, three of a kind clears
-together, and a full tray with no triple ends the game. One mechanic, no
-instructions — the pyramid of stacked layers is its own affordance, since a
-tile buried under others simply can't be tapped yet, and that's the whole
-tutorial.
+**Orchard Match**, a tile-matching game inspired by Sheep a Sheep: tap an exposed tile into a shared tray, three of a kind clears, and a full tray with no triple ends the game. There are no instructions: covered tiles are visibly muted and unavailable, while exposed tiles invite the first move.
 
 ## The moments that mattered
 
-1. **The one rule got a pure function before it got a DOM.** `applyTap` (tray
-   push, clear-on-triple, game-over-on-full) lives in `game-logic.ts` with no
-   DOM dependency, so `crit-5.test.ts` calls it directly instead of simulating
-   clicks — the rule itself is under test, not the rendering around it.
+1. **An existing game gave me a target before I wrote any code.** Rather than guess what "obvious in ten seconds, one mechanic, done in five minutes" should look like, I picked 羊了个羊 (Sheep a Sheep) and checked whether a scaled-down version actually satisfies the crit brief's own wording, instead of trusting my memory of the game. That turned a vague reference into a concrete sample to build toward.
    [`6d6187f`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/6d6187fb170a92d6ed39a2a21dbac7af5e607dc4)
 
-2. **Playing the first working build fixed what reading it couldn't.**
-   Covering only read as a faint opacity dip, and a 7-slot tray left too much
-   slack to ever realistically lose. I widened the covered/uncovered contrast
-   and cut the tray to 6 slots, then replayed to confirm a covered tile is now
-   unmistakable and losing is possible again.
+2. **The first build's covering wasn't legible.** Covered tiles read as only a faint opacity dip, so a stranger couldn't tell a blocked tile from a tappable one without trying it first. Playing the build is what surfaced this, not reading the CSS, so I widened the covered/uncovered contrast until a blocked tile was unmistakable at a glance, then replayed to confirm the fix changed what I actually saw.
    [`5aba506`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/5aba50675724190bb76105948ea6b993f55ef11c)
 
-3. **"Harder" needed proof it was still fair, not a guess.** Adding layers,
-   and later two more tile kinds, could each silently make the board
-   unwinnable rather than just harder, and no single playthrough would show
-   that. I wrote a throwaway greedy bot (a careless player's win rate) and a
-   backtracking solver (can a careful player still always win) and ran both
-   before accepting either change. The bot is what caught the second one:
-   adding two kinds against the old 6-slot tray gave a 0% naive win rate — a
-   pigeonhole problem, seven kinds into six slots. I recomputed the grid and
-   tray capacity together instead of just appending two emoji, then re-ran
-   both checks (60/500 naive wins, 30/30 solver-solvable) before committing.
-   [`fbd6240`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/fbd62406d0cc099b7dc2d86470bece7b2d478508),
-   [`053daa3`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/053daa34d549df34d3b0aec1dac6abf81293abe1)
+3. **Playing a finished round showed the game was too easy.** I added two tile kinds and shrank the tray, but the kinds alone created a 0% naive-win-rate pigeonhole — seven kinds, six slots — caught by a throwaway bot before it shipped. Raising capacity fixed the rate but gave up the tight loss-risk the tray was meant to have, so I reverted it and fixed the same problem in the tile arrangement instead: the one layer that's ever exposed all at once now concentrates on three of the seven kinds, recovering a non-zero win rate on six slots without that trade-off.
+   [`053daa3`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/053daa34d549df34d3b0aec1dac6abf81293abe1), [`839d04e`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/839d04e5a956ef4f27a5a4867b533d1c495ae1d1)
