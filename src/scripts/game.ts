@@ -10,16 +10,18 @@ import {
   type TileKind,
 } from "./game-logic";
 
-const KINDS: TileKind[] = ["🍎", "🍋", "🍇", "🍊", "🍓"];
+const KINDS: TileKind[] = ["🍎", "🍋", "🍇", "🍊", "🍓", "🍉", "🍒"];
 const KIND_NAMES: Record<TileKind, string> = {
   "🍎": "apple",
   "🍋": "lemon",
   "🍇": "grape",
   "🍊": "orange",
   "🍓": "strawberry",
+  "🍉": "watermelon",
+  "🍒": "cherries",
 };
 const COUNT_PER_KIND = 9;
-const TRAY_CAPACITY = 6;
+const TRAY_CAPACITY = 9;
 
 // Each layer sits a little further right and down than the one below it, so
 // every tile straddles up to four tiles in the layer beneath it. Sizing the

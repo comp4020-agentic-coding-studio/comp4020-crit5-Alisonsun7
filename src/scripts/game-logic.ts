@@ -20,7 +20,7 @@ export interface Board {
   covers: Map<number, number[]>;
 }
 
-export const COLS = 5;
+export const COLS = 7;
 export const ROWS = 3;
 export const LAYERS = 3;
 
