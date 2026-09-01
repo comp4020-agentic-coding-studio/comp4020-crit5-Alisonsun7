@@ -3,15 +3,27 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout
-  title="COMP4020 prototype"
-  description="Replace this with one sentence saying what this page is. A search result and a link preview both show it."
+  title="Tri-Match"
+  description="A tiny tile-matching game: clear the board before the tray fills up."
 >
   <main>
-    <h1>COMP4020 prototype</h1>
-    <p>
-      Replace this with your prototype. This week's brief is on the course
-      website; <code>spec/README.md</code> explains how the checks in this repo
-      relate to it.
-    </p>
+    <h1 class="visually-hidden">Tri-Match</h1>
+    <div id="board"></div>
+    <div id="tray">
+      <div class="tray-slot"></div>
+      <div class="tray-slot"></div>
+      <div class="tray-slot"></div>
+      <div class="tray-slot"></div>
+      <div class="tray-slot"></div>
+      <div class="tray-slot"></div>
+      <div class="tray-slot"></div>
+    </div>
+    <div id="result" hidden>
+      <p id="result-text"></p>
+      <button id="restart" type="button" aria-label="restart">⟲</button>
+    </div>
   </main>
+  <script>
+    import "../scripts/game";
+  </script>
 </BaseLayout>

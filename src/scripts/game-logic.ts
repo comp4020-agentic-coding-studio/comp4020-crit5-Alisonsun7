@@ -20,8 +20,8 @@ export interface Board {
   covers: Map<number, number[]>;
 }
 
-const COLS = 5;
-const ROWS = 3;
+export const COLS = 5;
+export const ROWS = 3;
 
 /** Fisher-Yates, using the given RNG so board layout is reproducible in tests. */
 function shuffle<T>(items: T[], rng: () => number): T[] {
