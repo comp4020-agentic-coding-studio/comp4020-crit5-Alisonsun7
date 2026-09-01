@@ -38,6 +38,7 @@ const CONFETTI_COLORS = ["#ffd76b", "#f76c6c", "#6ec6ff", "#8bd17c", "#ffffff"];
 const boardEl = document.querySelector<HTMLDivElement>("#board");
 const trayEl = document.querySelector<HTMLDivElement>("#tray");
 const resultEl = document.querySelector<HTMLDivElement>("#result");
+const resultIconEl = document.querySelector<HTMLParagraphElement>("#result-icon");
 const resultTitleEl = document.querySelector<HTMLParagraphElement>("#result-title");
 const resultTextEl = document.querySelector<HTMLParagraphElement>("#result-text");
 const confettiEl = document.querySelector<HTMLDivElement>("#confetti");
@@ -173,14 +174,16 @@ function onTap(tile: Tile): void {
 }
 
 function showResult(kind: "win" | "loss"): void {
-  if (!resultEl || !resultTitleEl || !resultTextEl) return;
+  if (!resultEl || !resultIconEl || !resultTitleEl || !resultTextEl) return;
   if (kind === "win") {
+    resultIconEl.textContent = "";
     resultTitleEl.textContent = "WIN";
     resultTextEl.textContent = "Cleared!";
     resultEl.classList.add("win");
     spawnConfetti();
   } else {
-    resultTitleEl.textContent = "";
+    resultIconEl.textContent = "😭";
+    resultTitleEl.textContent = "LOSE";
     resultTextEl.textContent = "No room left.";
     resultEl.classList.remove("win");
   }
