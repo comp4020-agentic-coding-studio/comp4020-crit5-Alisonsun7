@@ -41,17 +41,18 @@ jobs:
         # boilerplate every student replaces
         if: ${{ !github.event.repository.is_template }}
         run: pnpm check:evidence
-      - name: Check internal links
-        # Internal links only. linkinator checks outbound links by default, so
-        # someone else's rate limiter or outage would redden a build with
-        # nothing wrong in it --- crit 2 alone points the whole cohort at real
-        # orgs' sites and their socials. The regex skips anything not on the
-        # local origin the built site is served from; both spellings are named
-        # because a bare `--skip "^https?://"` matches that origin too and
-        # passes having scanned zero links. The stack skill rewrites the
-        # command below when it converts the repo to Astro, and carries the
-        # same skip over, so this comment holds either way.
-        run: pnpm dlx linkinator ./dist --silent --skip "^https?://(?!localhost|127)"
+      # The internal-link check used to live here, as
+      # `linkinator ./dist --skip ...`. It has moved into `pnpm check`
+      # (`scripts/check-links.mjs`, run by the step above) for two reasons.
+      #
+      # It was wrong: Astro bakes the Pages project path into every absolute
+      # URL, so crawling `dist/` as the root 404s on every asset of a site that
+      # deploys perfectly. The script stages `dist` under the base first, so the
+      # crawl root matches the live origin.
+      #
+      # And it was in the wrong place: a sensor that only exists in CI cannot
+      # catch you before you push, which is exactly how this went red on a
+      # commit whose local `pnpm check` was green.
       - name: Scan for committed secrets
         # Pinned, both halves: the SHA fixes the action's script, and `version`
         # fixes the scanner image, which otherwise floats on :latest. These two
