@@ -1,70 +1,38 @@
 # Process overview
 
-<!-- TEMPLATE: this file is a shape to fill in, not a form. Replace everything
-     in it with your own overview, and delete this comment — `pnpm
-     check:evidence` will remind you if it's still here. -->
-
-A reading-guide to how the work came together --- a map to your process, not an
-essay about it. Markers read this file and follow its citations; they don't
-trawl the repo for evidence you didn't point at, so if a moment mattered, cite
-it.
-
-This file is the shape; the course site's
-[assessment page](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#what-you-submit)
-is the requirement, and its
-[word counts](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#word-counts)
-cover every deliverable.
-
 ## What I built
 
-One paragraph: the thing, and the idea behind it.
+**Orchard Match**, a tile-matching game in the shape of 羊了个羊 (Sheep a
+Sheep): tap a visible tile into a shared tray, three of a kind clears
+together, and a full tray with no triple ends the game. One mechanic, no
+instructions — the pyramid of stacked layers is its own affordance, since a
+tile buried under others simply can't be tapped yet, and that's the whole
+tutorial.
 
 ## The moments that mattered
 
-Three or four for an assignment; fewer is fine for a weekly prototype. Keep the
-list short so each moment has room to do all four jobs:
+1. **The one rule got a pure function before it got a DOM.** `applyTap` (tray
+   push, clear-on-triple, game-over-on-full) lives in `game-logic.ts` with no
+   DOM dependency, so `crit-5.test.ts` calls it directly instead of simulating
+   clicks — the rule itself is under test, not the rendering around it.
+   [`6d6187f`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/6d6187fb170a92d6ed39a2a21dbac7af5e607dc4)
 
-1. **what happened** --- the problem, or the thing that went wrong
-2. **what you did instead of the obvious thing** --- the call you made, and why
-   it beat the obvious one
-3. **how you knew it was right** --- the check you ran, the viewport you looked
-   at, what you read before accepting the diff
-4. **the citation** --- a commit or commit range, a `CLAUDE.md` change, a check
-   that went from red to green, a prompt paired with the commit it produced
+2. **Playing the first working build fixed what reading it couldn't.**
+   Covering only read as a faint opacity dip, and a 7-slot tray left too much
+   slack to ever realistically lose. I widened the covered/uncovered contrast
+   and cut the tray to 6 slots, then replayed to confirm a covered tile is now
+   unmistakable and losing is possible again.
+   [`5aba506`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/5aba50675724190bb76105948ea6b993f55ef11c)
 
-Jobs 2 and 3 are the ones the repo can't tell a reader on its own, so they're
-where the marks are. The strongest moments are the ones where a correction
-landed in the **harness** --- the standards and checks your work has to satisfy
---- rather than in a retry: a rule added to `CLAUDE.md`, a check wired up, an
-attempt thrown away. Retrying until it passes is the routine case, and changing
-what the work runs against is the skilled one.
-
-Cite each moment as a link whose text is the commit hash or range and whose
-target is this repo's commit or compare URL, so a reader clicks straight to the
-evidence:
-
-- one commit: [`a1b2c3d`](https://github.com/YOUR-ORG/YOUR-REPO/commit/a1b2c3d)
-- a range:
-  [`a1b2c3d...e4f5a6b`](https://github.com/YOUR-ORG/YOUR-REPO/compare/a1b2c3d...e4f5a6b)
-
-To pair a prompt with the commit it produced, quote the prompt (curated, not a
-full transcript) next to the citation:
-
-> the prompt, verbatim
-
-Screenshots are welcome where one carries the verification better than a
-sentence does. Commit the file to this repo and link it with a **relative**
-path, which is what makes it render on GitHub: `![alt text](docs/before.png)`.
-Images don't count towards the word count and don't replace the citation.
-
-## Before you ship
-
-`pnpm check:evidence` verifies your citations resolve to real commits, that a
-reflection entry the marker reads is in `reflections/`, and that your
-`CLAUDE.md` is there --- before a marker ever opens the file. It checks that
-your map is traceable, not that it is good: the marker judges whether your
-small, deliberately chosen set of moments shows real judgement and reflection. A
-green check is not a substitute for that curation.
-
-Images aren't checked: unlike a citation whose SHA doesn't resolve, a broken
-image is visible the moment this file is rendered on GitHub.
+3. **"Harder" needed proof it was still fair, not a guess.** Adding layers,
+   and later two more tile kinds, could each silently make the board
+   unwinnable rather than just harder, and no single playthrough would show
+   that. I wrote a throwaway greedy bot (a careless player's win rate) and a
+   backtracking solver (can a careful player still always win) and ran both
+   before accepting either change. The bot is what caught the second one:
+   adding two kinds against the old 6-slot tray gave a 0% naive win rate — a
+   pigeonhole problem, seven kinds into six slots. I recomputed the grid and
+   tray capacity together instead of just appending two emoji, then re-ran
+   both checks (60/500 naive wins, 30/30 solver-solvable) before committing.
+   [`fbd6240`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/fbd62406d0cc099b7dc2d86470bece7b2d478508),
+   [`053daa3`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit5-Alisonsun7/commit/053daa34d549df34d3b0aec1dac6abf81293abe1)
