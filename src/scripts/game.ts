@@ -21,7 +21,7 @@ const KIND_NAMES: Record<TileKind, string> = {
   "🍒": "cherries",
 };
 const COUNT_PER_KIND = 9;
-const TRAY_CAPACITY = 9;
+const TRAY_CAPACITY = 6;
 
 // Each layer sits a little further right and down than the one below it, so
 // every tile straddles up to four tiles in the layer beneath it. Sizing the

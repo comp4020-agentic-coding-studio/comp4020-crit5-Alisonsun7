@@ -82,20 +82,20 @@ a {
 
 #tray {
   display: flex;
-  gap: 0.3rem;
+  gap: 0.5rem;
   justify-content: center;
 }
 
 .tray-slot {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 2.4rem;
+  height: 2.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid #4a2e15;
   border-radius: 0.4rem;
   background: #6b4423;
-  font-size: 1.05rem;
+  font-size: 1.3rem;
   box-shadow: inset 0 3px 6px rgb(0 0 0 / 50%);
 }
 

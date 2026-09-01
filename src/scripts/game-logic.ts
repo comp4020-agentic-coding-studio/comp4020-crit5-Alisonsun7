@@ -41,12 +41,27 @@ function shuffle<T>(items: T[], rng: () => number): T[] {
  * game's stacked cards). `kinds.length * countPerKind` must equal
  * `layers * COLS * ROWS` (one board's worth of tiles, split evenly across
  * layers).
+ *
+ * The topmost layer has nothing covering it, so its whole `COLS * ROWS`
+ * tiles are exposed simultaneously from the very first tap --- unlike every
+ * lower layer, which only opens up gradually as specific tiles above it
+ * clear. A plain random shuffle can therefore hand that first look at the
+ * board every kind at once, which is exactly the pigeonhole trap: with more
+ * kinds than tray slots, a player can be shown more distinct fruit than they
+ * have room to hold before any of them repeats. The original 羊了个羊 avoids
+ * this by not scattering a kind's copies thinly across the whole board ---
+ * `topKindCount` copies that trick here: the top layer draws from only a
+ * handful of kinds, each with several copies, so what greets the player is a
+ * small, quickly matchable set rather than the full roster. The remaining
+ * kinds (and the top kinds' leftover copies) fill the lower layers, which
+ * reveal a few tiles at a time anyway and so carry far less pigeonhole risk.
  */
 export function generateBoard(
   kinds: TileKind[],
   countPerKind: number,
   layers: number = LAYERS,
   rng: () => number = Math.random,
+  topKindCount: number = Math.min(3, kinds.length),
 ): Board {
   const total = kinds.length * countPerKind;
   const perLayer = COLS * ROWS;
@@ -54,17 +69,31 @@ export function generateBoard(
     throw new Error(`generateBoard: ${total} tiles doesn't fill ${layers} ${perLayer}-cell layers`);
   }
 
-  const bag = shuffle(
-    kinds.flatMap((kind) => Array.from({ length: countPerKind }, () => kind)),
+  const shuffledKinds = shuffle(kinds, rng);
+  const topKinds = shuffledKinds.slice(0, topKindCount);
+  const topLayerCounts = new Map<TileKind, number>();
+  const base = Math.floor(perLayer / topKindCount);
+  const extra = perLayer % topKindCount;
+  topKinds.forEach((kind, i) => topLayerCounts.set(kind, Math.min(countPerKind, base + (i < extra ? 1 : 0))));
+
+  const topBag = shuffle(
+    topKinds.flatMap((kind) => Array.from({ length: topLayerCounts.get(kind)! }, () => kind)),
+    rng,
+  );
+  const restBag = shuffle(
+    kinds.flatMap((kind) => Array.from({ length: countPerKind - (topLayerCounts.get(kind) ?? 0) }, () => kind)),
     rng,
   );
 
   const tiles: Tile[] = [];
   let nextId = 0;
+  let restIndex = 0;
   for (let layer = 0; layer < layers; layer++) {
+    const isTop = layer === layers - 1;
     for (let row = 0; row < ROWS; row++) {
       for (let col = 0; col < COLS; col++) {
-        tiles.push({ id: nextId, kind: bag[nextId]!, layer, col, row, cleared: false });
+        const kind = isTop ? topBag[row * COLS + col]! : restBag[restIndex++]!;
+        tiles.push({ id: nextId, kind, layer, col, row, cleared: false });
         nextId++;
       }
     }
