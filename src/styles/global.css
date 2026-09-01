@@ -3,7 +3,17 @@ body {
   padding: 2rem;
   font-family: system-ui, sans-serif;
   line-height: 1.6;
-  color: #1a1a1a;
+  color: #f5efe0;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgb(255 255 255 / 3%) 0,
+      rgb(255 255 255 / 3%) 2px,
+      transparent 2px,
+      transparent 12px
+    ),
+    radial-gradient(ellipse at top, #2f6b4f 0%, #1c4331 60%, #14332a 100%);
+  min-height: 100vh;
 }
 
 main {
@@ -16,7 +26,7 @@ main {
 }
 
 a {
-  color: #0b5fff;
+  color: #ffd76b;
 }
 
 .visually-hidden {
@@ -35,6 +45,12 @@ a {
   position: relative;
   width: 100%;
   aspect-ratio: 5.5 / 3.5;
+  background: repeating-linear-gradient(90deg, #c1893f 0, #c1893f 38px, #ad7935 38px, #ad7935 42px);
+  border: 6px solid #6b4423;
+  border-radius: 0.6rem;
+  box-shadow:
+    0 6px 16px rgb(0 0 0 / 35%),
+    inset 0 0 20px rgb(0 0 0 / 25%);
 }
 
 .tile {
@@ -42,15 +58,15 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  border-radius: 0.4rem;
-  background: #fff;
+  border: 2px solid #8a5a2b;
+  border-radius: 0.5rem;
+  background: #fdf3dd;
   font-size: clamp(1.1rem, 5vw, 1.6rem);
-  box-shadow: 0 2px 4px rgb(0 0 0 / 15%);
+  box-shadow: 0 3px 6px rgb(0 0 0 / 25%);
   cursor: pointer;
   transition:
     transform 0.15s ease,
-    opacity 0.15s ease;
+    filter 0.15s ease;
 }
 
 .tile.layer-0 {
@@ -59,13 +75,13 @@ a {
 
 .tile.layer-1 {
   z-index: 2;
-  box-shadow: 0 3px 6px rgb(0 0 0 / 25%);
+  background: #fffaf0;
+  box-shadow: 0 5px 10px rgb(0 0 0 / 35%);
 }
 
 .tile.covered {
-  box-shadow: none;
-  opacity: 0.35;
-  filter: grayscale(60%);
+  box-shadow: inset 0 4px 10px rgb(0 0 0 / 55%);
+  filter: brightness(0.5) saturate(0.6);
   cursor: default;
   pointer-events: none;
 }
@@ -86,16 +102,17 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed rgb(0 0 0 / 20%);
+  border: 2px solid #4a2e15;
   border-radius: 0.4rem;
-  background: #f4f4f4;
+  background: #6b4423;
   font-size: 1.3rem;
+  box-shadow: inset 0 3px 6px rgb(0 0 0 / 50%);
 }
 
 .tray-slot.filled {
-  border-style: solid;
-  border-color: rgb(0 0 0 / 30%);
-  background: #fff;
+  border-color: #8a5a2b;
+  background: #fdf3dd;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
 }
 
 #result {
@@ -114,6 +131,7 @@ a {
 #restart {
   border: none;
   background: none;
+  color: inherit;
   font-size: 1.8rem;
   cursor: pointer;
   padding: 0.5rem;

@@ -9,14 +9,18 @@ const KIND_NAMES: Record<TileKind, string> = {
   "🍓": "strawberry",
 };
 const COUNT_PER_KIND = 6;
-const TRAY_CAPACITY = 7;
+const TRAY_CAPACITY = 6;
 
 // Layer 1 tiles sit half a cell right and down from layer 0. Sizing the grid
 // to (COLS + 0.5) by (ROWS + 0.5) cells keeps that shifted layer inside the
 // board instead of hanging off the right/bottom edge.
 const CELL_W = 100 / (COLS + 0.5);
 const CELL_H = 100 / (ROWS + 0.5);
-const TILE_SCALE = 0.92;
+// The covering layer (1) is drawn noticeably smaller than the covered layer
+// (0), so a covered tile's corners stick out from underneath it instead of
+// just a thin sliver -- the covering needs to be visible without a tap.
+const TOP_SCALE = 0.8;
+const BOTTOM_SCALE = 0.97;
 
 const boardEl = document.querySelector<HTMLDivElement>("#board");
 const trayEl = document.querySelector<HTMLDivElement>("#tray");
@@ -42,16 +46,20 @@ function renderBoard(): void {
     if (tile.cleared) continue;
     const covered = isCovered(board, tile.id);
 
+    const scale = tile.layer === 1 ? TOP_SCALE : BOTTOM_SCALE;
+    const cellLeft = (tile.layer === 1 ? tile.col + 0.5 : tile.col) * CELL_W;
+    const cellTop = (tile.layer === 1 ? tile.row + 0.5 : tile.row) * CELL_H;
+
     const button = document.createElement("button");
     button.type = "button";
     button.className = `tile layer-${tile.layer}${covered ? " covered" : ""}`;
     button.textContent = tile.kind;
     button.setAttribute("aria-label", KIND_NAMES[tile.kind] ?? tile.kind);
     button.disabled = covered;
-    button.style.left = `${(tile.layer === 1 ? tile.col + 0.5 : tile.col) * CELL_W}%`;
-    button.style.top = `${(tile.layer === 1 ? tile.row + 0.5 : tile.row) * CELL_H}%`;
-    button.style.width = `${CELL_W * TILE_SCALE}%`;
-    button.style.height = `${CELL_H * TILE_SCALE}%`;
+    button.style.left = `${cellLeft + (CELL_W * (1 - scale)) / 2}%`;
+    button.style.top = `${cellTop + (CELL_H * (1 - scale)) / 2}%`;
+    button.style.width = `${CELL_W * scale}%`;
+    button.style.height = `${CELL_H * scale}%`;
     button.addEventListener("click", () => onTap(tile));
 
     boardEl.appendChild(button);
